@@ -43,7 +43,9 @@ class Boy:
                 self.Bool = False
 
         lengthX = gloX_ - self.x
-        lengthY = gloY_ - self.y 
+        lengthY = gloY_ - self.y
+
+        dist = math.sqrt(lengthX ** 2 + lengthY ** 2) 
 
         if lengthX < 0:
             PathX = -1
@@ -55,8 +57,10 @@ class Boy:
         else:
             PathY = 1
 
-        self.x += self.speed * PathX
-        self.y += self.speed * PathY
+        if dist > 0:
+            self.x += self.speed * lengthX/ dist 
+            self.y += self.speed * lengthY/ dist
+            
 
         if lengthX*PathX < self.speed:
             self.x = gloX_
