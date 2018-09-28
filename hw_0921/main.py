@@ -1,6 +1,13 @@
 from pico2d import *
 import random
 
+
+class Dot:
+    def __init__(self,xDot,yDot):
+        self.xDot = xDot
+        self.yDot = yDot
+
+
 class Grass:
     def __init__(grass_):
         grass_.image = load_image('./grass.png')
@@ -11,6 +18,8 @@ class Grass:
 class Boy:
     def __init__(self):
         print("Creating..")
+        self.count = 0
+        self.Bool = False
         self.x = random.randint(0, 800)
         self.y = random.randint(0, 600)
         self.speed = random.uniform(1.0, 5.0)
@@ -19,11 +28,22 @@ class Boy:
     def draw(self):
         self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
     def update(self):
-        self.frame = (self.frame + 1) % 8
+        global DirList
         global gloX, gloY
+        gloX_, gloY_ = gloX,gloY
+        self.frame = (self.frame + 1) % 8
+        if DirList:
+            if len(DirList) > self.count:
+                gloX_ = DirList[self.count].xDot
+                gloY_ = DirList[self.count].yDot
+                self.Bool = True
+            else:
+                self.Bool = False
+        else:
+                self.Bool = False
 
-        lengthX = gloX - self.x
-        lengthY = gloY - self.y 
+        lengthX = gloX_ - self.x
+        lengthY = gloY_ - self.y 
 
         if lengthX < 0:
             PathX = -1
@@ -39,9 +59,13 @@ class Boy:
         self.y += self.speed * PathY
 
         if lengthX*PathX < self.speed:
-            self.x = gloX
+            self.x = gloX_
         if lengthY*PathY < self.speed:
-            self.y = gloY
+            self.y = gloY_
+
+        if self.Bool == True:
+            if self.x == DirList[self.count].xDot and self.y == DirList[self.count].yDot:
+                self.count += 1
 
 
 def handle_events():
@@ -49,6 +73,7 @@ def handle_events():
     global gloX,gloY
     global index
     global DirList
+    global boys
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -58,9 +83,18 @@ def handle_events():
                 running = False
         elif event.type == SDL_MOUSEMOTION:
              gloX,gloY = event.x, 600 - event.y
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            DirList.append(Dot(event.x, 600-event.y))
+            print(DirList)
+            index += 1
+       
         
             
 open_canvas()
+
+DirList = []
+
+index = 0
 
 running = True
 
