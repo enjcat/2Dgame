@@ -58,9 +58,6 @@ def handle_events():
                 running = False
         elif event.type == SDL_MOUSEMOTION:
              gloX,gloY = event.x, 600 - event.y
-        elif event.type == SDL_MOUSEBUTTONDOWN:
-            DirList[index] = (event.x,600-event.y)
-            index += 1
         
             
 open_canvas()
