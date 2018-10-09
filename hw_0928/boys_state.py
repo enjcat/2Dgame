@@ -134,3 +134,7 @@ def resume():
     pass
 
 
+if __name__ == '__main__':
+    import sys
+    game_framework.run(sys.modules[__name__])
+    
