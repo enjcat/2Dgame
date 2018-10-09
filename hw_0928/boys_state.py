@@ -17,17 +17,18 @@ class Grass:
         grass_.image.draw(400, 300)
 
 class Boy:
+    image = 0
     def __init__(self):
         print("Creating..")
         self.count = 0
+        self.state = 3
         self.Bool = False
         self.x = random.randint(0, 800)
         self.y = random.randint(0, 600)
         self.speed = random.uniform(1.0, 5.0)
         self.frame = random.randint(0, 7)
-        self.image = load_image('./run_animation.png')
     def draw(self):
-        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+        Boy.image.clip_draw(self.frame * 100, self.state*100, 100, 100, self.x, self.y)
     def update(self):
         global DirList
         global gloX, gloY
@@ -50,17 +51,30 @@ class Boy:
 
         if lengthX < 0:
             PathX = -1
-        else:
+            self.state = 0
+        elif lengthX > 0:
             PathX = 1
+            self.state = 1
+        else:
+            PathX = 0
             
         if lengthY < 0:
             PathY = -1
-        else:
+        elif lengthY > 0:
             PathY = 1
+        else:
+            PathY = 0
 
         if dist > 0:
             self.x += self.speed * lengthX/ dist 
             self.y += self.speed * lengthY/ dist
+
+        if dist == 0:
+            if self.state == 0:
+                self.state = 2
+            if self.state == 1:
+                self.state = 3
+            
             
 
         if lengthX*PathX < self.speed:
@@ -90,7 +104,6 @@ def handle_events():
              gloX,gloY = event.x, 600 - event.y
         elif event.type == SDL_MOUSEBUTTONDOWN:
             DirList.append(Dot(event.x, 600-event.y))
-            print(DirList)
             index += 1
        
 
@@ -103,11 +116,12 @@ boys = []
 def enter():    
     open_canvas()
     global DirList, index, running, gloX,gloY,Grass_, boys
+    Boy.image = load_image('../res/animation_sheet.png')
     DirList = []
     index = 0
     gloX,gloY = 0,0
     Grass_ = Grass()
-    boys = [ Boy() for i in range(20) ]
+    boys = [ Boy() for i in range(1000) ]
 
 def update():
     global boys
