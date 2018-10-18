@@ -1,5 +1,7 @@
 from pico2d import *
+import game_framework
 import random
+import json
 
 
 class Dot:
@@ -16,17 +18,19 @@ class Grass:
         grass_.image.draw(400, 300)
 
 class Boy:
+    image = 0
     def __init__(self):
         print("Creating..")
         self.count = 0
+        self.state = 3
         self.Bool = False
         self.x = random.randint(0, 800)
         self.y = random.randint(0, 600)
         self.speed = random.uniform(1.0, 5.0)
         self.frame = random.randint(0, 7)
-        self.image = load_image('../res/run_animation.png')
+        self.name = 'myname'
     def draw(self):
-        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+        Boy.image.clip_draw(self.frame * 100, self.state*100, 100, 100, self.x, self.y)
     def update(self):
         global DirList
         global gloX, gloY
@@ -49,17 +53,29 @@ class Boy:
 
         if lengthX < 0:
             PathX = -1
-        else:
+            self.state = 0
+        elif lengthX > 0:
             PathX = 1
+            self.state = 1
+        else:
+            PathX = 0
             
         if lengthY < 0:
             PathY = -1
-        else:
+        elif lengthY > 0:
             PathY = 1
+        else:
+            PathY = 0
 
         if dist > 0:
-            self.x += self.speed * lengthX/ dist 
-            self.y += self.speed * lengthY/ dist
+            pass
+
+        if dist == 0:
+            if self.state == 0:
+                self.state = 2
+            if self.state == 1:
+                self.state = 3
+            
             
 
         if lengthX*PathX < self.speed:
@@ -81,47 +97,69 @@ def handle_events():
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            running = False
+            game_framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
-                running = False
+                game_framework.pop_state()
         elif event.type == SDL_MOUSEMOTION:
              gloX,gloY = event.x, 600 - event.y
         elif event.type == SDL_MOUSEBUTTONDOWN:
             DirList.append(Dot(event.x, 600-event.y))
-            print(DirList)
             index += 1
        
-        
-            
-open_canvas()
 
-DirList = []
+DirList=[]
+index=0
+gloX=0
+gloY=0
+Grass_=0
+boys = []
+def enter():    
+    open_canvas()
+    global DirList, index, running, gloX,gloY,Grass_, boys
+    Boy.image = load_image('../res/animation_sheet.png')
+    DirList = []
+    index = 0
+    gloX,gloY = 0,0
+    global boys
+    file = open('boys_data.json')
+    List = json.load(file)
+    for e in List['boys']:
+        b = Boy()
+        b.name = e['name']
+        b.x = e['x']
+        b.y = e['y']
+        b.speed = e['speed']
+        boys.append(b)
 
-index = 0
+    Grass_ = Grass()
 
-running = True
-
-gloX,gloY = 0,0
-
-Grass_ = Grass()
-
-boys = [ Boy() for i in range(20) ]
-
-while running:
-    handle_events()
-
+def update():
+    global boys
     for boy in boys:
         boy.update()
 
+def draw():
+    delay(0.03)
+    global Grass_,boys
     clear_canvas()
     Grass_.draw()
     for boy in boys:
         boy.draw()
     update_canvas()
 
-    delay(0.05)
 
-close_canvas()
+def exit():
+    close_canvas()
+
+def pause():
+    pass
+
+def resume():
+    pass
 
 
+if __name__ == '__main__':
+    import sys
+    game_framework.run(sys.modules[__name__])
+    
