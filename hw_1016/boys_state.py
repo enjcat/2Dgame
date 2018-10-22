@@ -67,9 +67,6 @@ class Boy:
         else:
             PathY = 0
 
-        if dist > 0:
-            pass
-
         if dist == 0:
             if self.state == 0:
                 self.state = 2
