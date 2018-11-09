@@ -85,6 +85,7 @@ next_state_table = {
 
 class Boy:
     image = None
+    Line = None
 
     def __init__(self):
         print("Creating..")
@@ -99,6 +100,8 @@ class Boy:
         self.dx = 0
         if Boy.image == None:
             Boy.image = load_image('../res/animation_sheet.png')
+        if Boy.Line == None:
+            Boy.Line = load_image('../res/line.png')
 
     def get_bb(self):
         if self.state == IdleState:
@@ -153,8 +156,6 @@ class Boy:
         if self.state.enter:
             self.state.enter(self)
     def fire_ball(self, big,ex,ey):
-        dist = math.sqrt((ex-self.x) ** 2 + (ey-self.y) ** 2)
-        print(ex , self.x)
         ballSpeed = 0.1 * (ex - self.x)/2 + self.dx
 
         ySpeed = 0.1 * (ey - self.y)/2 
