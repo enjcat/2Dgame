@@ -24,8 +24,9 @@ def handle_events():
             gloX,gloY = e.x, 600 - e.y
             x,y = boy.x,boy.y
             dist = math.sqrt((x-gloX) ** 2 + (y-gloY) ** 2)
-            Boy.Line.clip_composite_draw(0, 0, 500, 10, 
-            atan2(gloX-x,gloY-y)/180*3.141592, '', 250, 5, 500, 10)
+            SDL_RenderDrawLine(NULL, x, x, gloX, gloY);
+            #Boy.Line.clip_composite_draw(0, 0, 500, 10, 
+            #atan2(gloX-x,gloY-y)/180*3.141592, '', 250, 5, 500, 10)
         if e.type == SDL_QUIT:
             game_framework.quit()
         elif (e.type, e.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
