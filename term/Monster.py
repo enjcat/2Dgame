@@ -1,6 +1,8 @@
 from pico2d import * # C:\Users\enjcat\AppData\Local\Programs\Python\Python36\lib\site-packages\pico2d
 import game_framework
 import random
+import game_world
+import random
 
 
 
@@ -10,10 +12,11 @@ class Monster:
     def draw(self):
         self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
     def update(self):
-        global Player_ob
+        Player_ob = game_world.objects_at_layer(game_world.layer_player)
+        Player_ob = next(Player_ob, None)
+
         lengthX = Player_ob.x - self.x
         lengthY = Player_ob.y - self.y
-
         dist = math.sqrt(lengthX ** 2 + lengthY ** 2) 
 
         if lengthX < 0:
@@ -37,8 +40,7 @@ class Monster:
 class Tums:
     def __init__(self):
         print("Creating..")
-        self.x = 400;
-        self.y = 400;
+        Start_rocation(self)
         self.image = load_image('./res/Tums.png')
         self.frame = 0
         self.speed = 3
@@ -51,8 +53,7 @@ class Tums:
 class Demon:
     def __init__(self):
         print("Creating..")
-        self.x = 300;
-        self.y = 400;
+        Start_rocation(self)
         self.image = load_image('./res/Demon.png')
         self.frame = 0
         self.speed = 6
@@ -65,8 +66,7 @@ class Demon:
 class Imp:
     def __init__(self):
         print("Creating..")
-        self.x = 200;
-        self.y = 400;
+        Start_rocation(self)
         self.image = load_image('./res/Imp.png')
         self.frame = 0
         self.speed = 2
@@ -103,6 +103,25 @@ def pause():
 
 def resume():
     pass
+
+def Start_rocation(self):
+    field_width = get_canvas_width()
+    field_height = get_canvas_height()
+
+    side = random.randint(1, 4) # 1=top, 2=left, 3=bottom, 4=right
+    if (side == 1): # top
+        self.x, self.y = random.randint(0, field_width), 0
+
+    if (side == 2): # left
+        self.x, self.y = 0, random.randint(0, field_height)
+
+    if (side == 3): # bottom
+        self.x, self.y = random.randint(0, field_width), field_height
+
+    if (side == 4): # right
+        self.x, self.y = field_width, random.randint(0, field_height)
+
+
 
 
 if __name__ == '__main__':

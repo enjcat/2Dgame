@@ -32,7 +32,7 @@ class  Player:
                 if event.key == SDLK_ESCAPE:
                     game_framework.pop_state()
             elif event.type == SDL_MOUSEMOTION:
-                 MouseX,MouseY = event.x, 600 - event.y
+                 MouseX,MouseY = event.x, get_canvas_height() - event.y
             elif event.type == SDL_MOUSEBUTTONDOWN:
                 a= 1
             
