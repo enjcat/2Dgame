@@ -18,9 +18,9 @@ def handle_events():
             if event.key == SDLK_ESCAPE:
                 game_framework.pop_state()
         elif event.type == SDL_MOUSEMOTION:
-             Angel.handle_events(events)
-        elif event.type == SDL_MOUSEBUTTONDOWN:
             pass
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            Angel.handle_events(events)
             
 
 
@@ -35,13 +35,14 @@ def enter():
     game_world.add_object(bg,game_world.layer_bg)
     game_world.add_object(Angel,game_world.layer_player)
     game_world.add_object(tower,game_world.layer_obstacle)
+    game_world.add_object(Monster.Imp(),game_world.layer_obstacle)
 
 def update():
     delay(0.03)
-    if(game_world.count_at_layer(game_world.layer_obstacle) < get_time()/10):
-         game_world.add_object(Monster.Imp(),game_world.layer_obstacle)
-         game_world.add_object(Monster.Tums(),game_world.layer_obstacle)
-         game_world.add_object(Monster.Demon(),game_world.layer_obstacle)
+    #if(game_world.count_at_layer(game_world.layer_obstacle) < get_time()/10):
+     #    game_world.add_object(Monster.Imp(),game_world.layer_obstacle)
+      #   game_world.add_object(Monster.Tums(),game_world.layer_obstacle)
+       #  game_world.add_object(Monster.Demon(),game_world.layer_obstacle)
          
     game_world.update()
 
