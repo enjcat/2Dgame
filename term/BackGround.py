@@ -10,7 +10,8 @@ class BackGround:
         pass
         
     def draw(self):
-        self.image.draw(400,300)
+        self.image.clip_draw(500 - get_canvas_width()//2,400 - get_canvas_height()//2,
+        	get_canvas_width(),get_canvas_height(),get_canvas_width()//2,get_canvas_height()//2)
 
 
 

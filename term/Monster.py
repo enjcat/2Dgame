@@ -3,17 +3,28 @@ import game_framework
 import random
 import game_world
 import random
+import player
+import Main
+
+RIGHT = 1
+LEFT = -1
 
 
 
 class Monster:
+    blood = None
+    bloodnone = None
     def __init__(self):
         print("Creating..")
+        if(blood is None):
+            Monster.blood = load_image('./res/blood.png')
+            Monster.bloodnone = load_image('./res/bloodnone.png')
     def draw(self):
         if self.dir == 1:
             self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
         else:
             self.image.clip_composite_draw(self.frame * 100, 0, 100, 100, 0, 'h', self.x, self.y)
+
     def update(self):
         Player_ob = game_world.objects_at_layer(game_world.layer_player)
         Player_ob = next(Player_ob, None)
@@ -22,111 +33,127 @@ class Monster:
         lengthY = Player_ob.y - self.y
         dist = math.sqrt(lengthX ** 2 + lengthY ** 2) 
 
-        if lengthX < 0:
-            PathX = -1
-        elif lengthX > 0:
-            PathX = 1
-        else:
-            PathX = 0
-            
-        if lengthY < 0:
-            PathY = -1
-        elif lengthY > 0:
-            PathY = 1
-        else:
-            PathY = 0
+        if Player_ob.state >= 2:
+            if(dist < Player_ob.wepon.range):
+                self.speed = self.Maxspeed * -5
+                self.health -= Player_ob.wepon.damage
 
         if dist > 0:
             self.x += self.speed * lengthX/ dist 
             self.y += self.speed * lengthY/ dist
         if(Player_ob.x < self.x):
-            self.dir = 1
+            self.dir = RIGHT
         else:
-            self.dir = -1
+            self.dir = LEFT
 
         #colide
-        if(self.dir == -1):
-            left ,right = (self.x - self.right), (self.x + self.left)
-        else:
-            left ,right = (self.x - self.left), (self.x + self.right)
-        if(Player_ob.dir == -1):
-            Tleft ,Tright = (Player_ob.x - Player_ob.right), (Player_ob.x + Player_ob.left)
-        else:
-            Tleft ,Tright = (Player_ob.x - Player_ob.left), (Player_ob.x + Player_ob.right)
+        if (Player_ob.state < 2):
+            if(self.dir == LEFT):
+                left ,right = (self.x - self.right), (self.x + self.left)
+            else:
+                left ,right = (self.x - self.left), (self.x + self.right)
+            if(Player_ob.state == player.IDLE_LEFT):
+                Tleft ,Tright = (Player_ob.x - Player_ob.right), (Player_ob.x + Player_ob.left)
+            elif (Player_ob.state == player.IDLE_RIGHT):
+                Tleft ,Tright = (Player_ob.x - Player_ob.left), (Player_ob.x + Player_ob.right)
 
-        if (left < Tright and right > Tleft and
-            (self.y+self.top)  > (Player_ob.y-Player_ob.bottom) and 
-            (self.y-self.bottom) < (Player_ob.y+Player_ob.top)):
-            if dist > 0:
-                self.x -= self.speed * lengthX/ dist *20
-                self.y -= self.speed * lengthY/ dist *20
+            if (left < Tright and right > Tleft and
+                (self.y+self.top)  > (Player_ob.y-Player_ob.bottom) and 
+                (self.y-self.bottom) < (Player_ob.y+Player_ob.top)):
+                    self.speed = self.Maxspeed * -5
+                    Player_ob.health -= self.damage
+
+        if(self.speed != self.Maxspeed):
+            self.speed += 1
+        if self.health <= 0:
+            game_world.remove_object(self)
             
 
 
 
 class Tums:
+    image = None
     def __init__(self):
         print("Creating..")
         Start_rocation(self)
-        self.image = load_image('./res/Tums.png')
+        if Tums.image is None:
+            Tums.image = load_image('./res/Tums.png')
         self.frame = 0
-        self.speed = 3
+        self.Maxspeed = 2
+        self.speed = 2
         self.top = 65
         self.bottom = 70
         self.right = 55
         self.left = 60
         self.dir = 1
+        self.health = 40
+        self.damage = 7
     def draw(self):
         if self.dir == 1:
-            self.image.clip_draw(self.frame * 150, 0, 150, 150, self.x, self.y)
+            Tums.image.clip_draw(int(self.frame) * 150, 0, 150, 150, self.x, self.y)
         else:
-            self.image.clip_composite_draw(self.frame * 150, 0, 150, 150, 0, 'h', self.x, self.y)
-        draw_rectangle(self.x-self.left,self.y-self.bottom,self.x+self.right,self.y+self.top)
+            Tums.image.clip_composite_draw(int(self.frame) * 150, 0, 150, 150, 0, 'h', self.x, self.y,150,150)
+        
+        Monster.bloodnone.draw_to_origin(self.x-20,self.y+70,40,3)
+        Monster.blood.draw_to_origin(self.x-20,self.y+70,self.health,3)
     def update(self):
-        self.frame = (self.frame + 1) % 5
+        self.frame = (self.frame + 0.35) % 5
         Monster.update(self)
 
 class Demon:
+    image = None
     def __init__(self):
         print("Creating..")
         Start_rocation(self)
-        self.image = load_image('./res/Demon.png')
+        if Demon.image is None:
+            Demon.image = load_image('./res/Demon.png')
         self.frame = 0
-        self.speed = 6
+        self.Maxspeed = 4
+        self.speed = 4
         self.top = 80
         self.bottom = 80
         self.right = 35
         self.left = 40
         self.dir = 1
+        self.health = 30
+        self.damage = 5
     def draw(self):
         if self.dir == 1:
-            self.image.clip_draw(self.frame * 100, 0, 100, 200, self.x, self.y)
+            Demon.image.clip_draw(int(self.frame) * 100, 0, 100, 200, self.x, self.y)
         else:
-            self.image.clip_composite_draw(self.frame * 100, 0, 100, 200, 0, 'h', self.x, self.y)
-        self.frame = (self.frame + 1) % 2
-        draw_rectangle(self.x-self.left,self.y-self.bottom,self.x+self.right,self.y+self.top)
+            Demon.image.clip_composite_draw(int(self.frame) * 100, 0, 100, 200, 0, 'h', self.x, self.y,100,200)
+        self.frame = (self.frame + 0.5) % 2
+
+        Monster.bloodnone.draw_to_origin(self.x-15,self.y+85,30,3)
+        Monster.blood.draw_to_origin(self.x-15,self.y+85,self.health,3)
     def update(self):
         Monster.update(self)
 
 class Imp:
+    image = None
     def __init__(self):
         print("Creating..")
         Start_rocation(self)
-        self.image = load_image('./res/Imp.png')
+        if Imp.image is None:
+            Imp.image = load_image('./res/Imp.png')
         self.frame = 0
-        self.speed = 2
+        self.Maxspeed = 3
+        self.speed = 3
         self.top = 15
         self.bottom = 35
         self.right = 35
         self.left = 30
         self.dir = 1
+        self.health = 15
+        self.damage = 3
     def draw(self):
         if self.dir == 1:
-            self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+            Imp.image.clip_draw(int(self.frame) * 100, 0, 100, 100, self.x, self.y)
         else:
-            self.image.clip_composite_draw(self.frame * 100, 0, 100, 100, 0, 'h', self.x, self.y,100,100)
-        self.frame = (self.frame + 1) % 5
-        draw_rectangle(self.x-self.left,self.y-self.bottom,self.x+self.right,self.y+self.top)
+            Imp.image.clip_composite_draw(int(self.frame) * 100, 0, 100, 100, 0, 'h', self.x, self.y,100,100)
+        self.frame = (self.frame + 0.5) % 5
+        Monster.bloodnone.draw_to_origin(self.x-7.5,self.y+20,15,3)
+        Monster.blood.draw_to_origin(self.x-7.5,self.y+20,self.health,3)
     def update(self):
         Monster.update(self)
         

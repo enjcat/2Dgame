@@ -4,9 +4,17 @@ import random
 import game_world
 import Monster
 import player
+import Wepon
 import BackGround
 import Holy
+import ui
 
+time = None
+Impcount = 0
+Holycount = 0
+Tumscount = 0
+Demoncount = 0
+size = 0
 
 def handle_events():
     global Angel
@@ -17,8 +25,10 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.pop_state()
+            else:
+                Angel.handle_events(events)
         elif event.type == SDL_MOUSEMOTION:
-            pass
+            Angel.handle_events(events)
         elif event.type == SDL_MOUSEBUTTONDOWN:
             Angel.handle_events(events)
             
@@ -27,23 +37,82 @@ def handle_events():
 
 
 def enter():
-    global Angel
+    global Angel,time
+    time = (get_time()//1)
     open_canvas(300,300)
     bg = BackGround.BackGround()
     Angel = player.Player()
     tower = Holy.Tower()
     game_world.add_object(bg,game_world.layer_bg)
     game_world.add_object(Angel,game_world.layer_player)
-    game_world.add_object(tower,game_world.layer_obstacle)
-    game_world.add_object(Monster.Imp(),game_world.layer_obstacle)
+    game_world.add_object(tower,game_world.layer_bg)
+    if(Monster.Monster.blood is None):
+            Monster.Monster.blood = load_image('./res/blood.png')
+            Monster.Monster.bloodnone = load_image('./res/bloodnone.png')
 
 def update():
+    global time,Impcount,Holycount,Tumscount,Demoncount,size
     delay(0.03)
-    #if(game_world.count_at_layer(game_world.layer_obstacle) < get_time()/10):
-     #    game_world.add_object(Monster.Imp(),game_world.layer_obstacle)
-      #   game_world.add_object(Monster.Tums(),game_world.layer_obstacle)
-       #  game_world.add_object(Monster.Demon(),game_world.layer_obstacle)
-         
+    time = (get_time()//1)
+    if(time < 60):
+        if(time%10== 0 and Impcount == 0):
+            game_world.add_object(Monster.Imp(),game_world.layer_monster)
+            Impcount = 1
+        if(time%10== 9 and Impcount == 1):
+            Impcount = 0
+        if(time%20== 0 and Holycount == 0):
+            game_world.objects[0][1].pop()
+            Holycount = 1
+        if(time%20== 19 and Holycount == 1):
+            Holycount = 0
+    elif(time < 180):
+        if(size == 0):
+            resize_canvas(800,600)
+            size = 1
+        if(time%10== 0 and Impcount == 0):
+            game_world.add_object(Monster.Imp(),game_world.layer_monster)
+            Impcount = 1
+        if(time%10== 9 and Impcount == 1):
+            Impcount = 0
+        if(time%30== 0 and Holycount == 0):
+            game_world.objects[0][1].pop()
+            Holycount = 1
+        if(time%30== 29 and Holycount == 1):
+            Holycount = 0
+        if(time%40== 0 and Tumscount == 0):
+            game_world.add_object(Monster.Tums(),game_world.layer_monster)
+            Tumscount = 1
+        if(time%40== 39 and Tumscount == 1):
+            Tumscount = 0
+    elif(time < 300):
+        if(size == 1):
+            resize_canvas(1000,800)
+            size = 2
+        if(time%5== 0 and Impcount == 0):
+            game_world.add_object(Monster.Imp(),game_world.layer_monster)
+            Impcount = 1
+        if(time%5== 4 and Impcount == 1):
+            Impcount = 0
+        if(time%30== 0 and Holycount == 0):
+            game_world.objects[0][1].pop()
+            Holycount = 1
+        if(time%30== 29 and Holycount == 1):
+            Holycount = 0
+        if(time%40== 0 and Tumscount == 0):
+            game_world.add_object(Monster.Tums(),game_world.layer_monster)
+            Tumscount = 1
+        if(time%40== 39 and Tumscount == 1):
+            Tumscount = 0
+        if(time%50== 0 and Demoncount == 0):
+            game_world.add_object(Monster.Demon(),game_world.layer_monster)
+            Demoncount = 1
+        if(time%50== 49 and Demoncount == 1):
+            Demoncount = 0
+
+
+
+
+
     game_world.update()
 
 def draw():
