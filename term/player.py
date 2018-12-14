@@ -37,7 +37,7 @@ class  Player:
         self.health = 70;
         self.wepon = Wepon.stick()
         self.wepon.chosen = 1
-        game_world.add_object(self.wepon,layer_obstacle)
+        game_world.add_object(self.wepon,game_world.layer_obstacle)
         self.state = IDLE_LEFT
         self.gotox = 0
         self.gotoy = 0
@@ -110,7 +110,8 @@ class  Player:
             elif event.type == SDL_MOUSEMOTION:
                 MouseX,MouseY = event.x, get_canvas_height() - event.y
             elif event.type == SDL_MOUSEBUTTONDOWN:
-                self.wepon.check()
+                if not self.wepon.__class__.__name__ is 'ice':
+                    self.wepon.check()
 
 
 

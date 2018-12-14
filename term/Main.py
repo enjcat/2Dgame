@@ -69,25 +69,6 @@ def update():
         if(size == 0):
             resize_canvas(800,600)
             size = 1
-        if(time%10== 0 and Impcount == 0):
-            game_world.add_object(Monster.Imp(),game_world.layer_monster)
-            Impcount = 1
-        if(time%10== 9 and Impcount == 1):
-            Impcount = 0
-        if(time%30== 0 and Holycount == 0):
-            game_world.objects[0][1].pop()
-            Holycount = 1
-        if(time%30== 29 and Holycount == 1):
-            Holycount = 0
-        if(time%40== 0 and Tumscount == 0):
-            game_world.add_object(Monster.Tums(),game_world.layer_monster)
-            Tumscount = 1
-        if(time%40== 39 and Tumscount == 1):
-            Tumscount = 0
-    elif(time < 300):
-        if(size == 1):
-            resize_canvas(1000,800)
-            size = 2
         if(time%5== 0 and Impcount == 0):
             game_world.add_object(Monster.Imp(),game_world.layer_monster)
             Impcount = 1
@@ -98,15 +79,34 @@ def update():
             Holycount = 1
         if(time%30== 29 and Holycount == 1):
             Holycount = 0
-        if(time%40== 0 and Tumscount == 0):
+        if(time%20== 0 and Tumscount == 0):
             game_world.add_object(Monster.Tums(),game_world.layer_monster)
             Tumscount = 1
-        if(time%40== 39 and Tumscount == 1):
+        if(time%20== 19 and Tumscount == 1):
             Tumscount = 0
-        if(time%50== 0 and Demoncount == 0):
+    elif(time < 300):
+        if(size == 1):
+            resize_canvas(1000,800)
+            size = 2
+        if(time%3== 0 and Impcount == 0):
+            game_world.add_object(Monster.Imp(),game_world.layer_monster)
+            Impcount = 1
+        if(time%3== 2 and Impcount == 1):
+            Impcount = 0
+        if(time%30== 0 and Holycount == 0):
+            game_world.objects[0][1].pop()
+            Holycount = 1
+        if(time%30== 29 and Holycount == 1):
+            Holycount = 0
+        if(time%10== 0 and Tumscount == 0):
+            game_world.add_object(Monster.Tums(),game_world.layer_monster)
+            Tumscount = 1
+        if(time%10== 9 and Tumscount == 1):
+            Tumscount = 0
+        if(time%30== 0 and Demoncount == 0):
             game_world.add_object(Monster.Demon(),game_world.layer_monster)
             Demoncount = 1
-        if(time%50== 49 and Demoncount == 1):
+        if(time%30== 29 and Demoncount == 1):
             Demoncount = 0
 
 

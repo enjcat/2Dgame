@@ -28,8 +28,8 @@ class stick:
 
     def update(self):
         self.point_degree += -360 if self.point_degree >= 360 else 7
-        if (chosen == 0):
-            grap()
+        if (self.chosen == 0):
+            grap(self)
 
     def draw(self):
         if self.chosen == 1:
@@ -72,8 +72,8 @@ class sword:
     def update(self):
         self.point_dir = -3 if self.point_x >= 50 else (3 if self.point_x <= -50 else self.point_dir)
         self.point_x += self.point_dir
-        if (chosen == 0):
-            grap()
+        if (self.chosen == 0):
+            grap(self)
 
     def draw(self):
         if self.chosen == 1:
@@ -113,8 +113,8 @@ class ice:
         self.chosen = 0
 
     def update(self):
-        if (chosen == 0):
-            grap()
+        if (self.chosen == 0):
+            grap(self)
     def draw(self):
         if self.chosen == 1:
             self.Key[self.List[0]].draw(player.MouseX - 45, player.MouseY + 25,30,30)
@@ -161,8 +161,8 @@ class fire:
     def update(self):
         self.point_dir = -3 if self.point_y >= 50 else (3 if self.point_y <= -50 else self.point_dir)
         self.point_y += self.point_dir
-        if (chosen == 0):
-            grap()
+        if (self.chosen == 0):
+            grap(self)
 
     def draw(self):
         if self.chosen == 1:
@@ -200,8 +200,8 @@ class wand:
 
     def update(self):
         self.point_degree += -360 if self.point_degree >= 360 else 7
-        if (chosen == 0):
-            grap()
+        if (self.chosen == 0):
+            grap(self)
 
     def draw(self):
         if self.chosen == 1:
@@ -220,7 +220,7 @@ class wand:
 class heal:
     shape = None
     def __init__(self):
-        if shape == None:
+        if heal.shape is None:
             heal.shape = load_image('./res/heal.png')
         self.x = random.randint(0,get_canvas_width())
         self.y = random.randint(0,get_canvas_height())
@@ -232,7 +232,7 @@ class heal:
         lengthX = Player_ob.x - self.x
         lengthY = Player_ob.y - self.y
         dist = math.sqrt(lengthX ** 2 + lengthY ** 2) 
-        if(dist > 40):
+        if(dist < 40):
             Player_ob.health += 20
             game_world.remove_object(self)
 
@@ -246,7 +246,7 @@ def grap(self):
     lengthX = Player_ob.x - self.x
     lengthY = Player_ob.y - self.y
     dist = math.sqrt(lengthX ** 2 + lengthY ** 2) 
-    if(dist > 40):
+    if(dist < 40):
         game_world.remove_object(Player_ob.wepon)
         Player_ob.wepon = self
         self.chosen = 1
